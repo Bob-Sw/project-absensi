@@ -1,4 +1,4 @@
-const API_URL = "ISI_URL_GAS_WEBAPP";
+const API_URL = "https://script.google.com/macros/s/AKfycbyNjMDjT4_OuxYMKUJl2p9cD_EGr_r8XYQwEyfS2D-vhlfXFMdK87XdXlMkfPCljfaq/exec";
 
 let video = document.getElementById("video");
 let stream = null;
