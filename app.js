@@ -18,13 +18,19 @@ function getLocation() {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
       pos => {
-        if (pos.coords.accuracy > 50) {
-          reject("GPS tidak akurat");
+        // Ubah threshold akurasi menjadi lebih fleksibel (100 meter)
+        if (pos.coords.accuracy > 100) {
+          reject("GPS tidak akurat (akurasi: " + Math.round(pos.coords.accuracy) + "m)");
         } else {
           resolve(pos.coords);
         }
       },
-      err => reject(err.message)
+      err => reject(err.message),
+      {
+        enableHighAccuracy: true,  // ← Minta akurasi tinggi
+        timeout: 15000,             // ← Tunggu max 15 detik
+        maximumAge: 0               // ← Jangan pakai cache, selalu ambil fresh
+      }
     );
   });
 }
