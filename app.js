@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyNjMDjT4_OuxYMKUJl2p9cD_EGr_r8XYQwEyfS2D-vhlfXFMdK87XdXlMkfPCljfaq/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzYfGBgoUuWhbVtA2qQ9wdMoYeH_qHRqXWxbs4xm7US3clXEScYcGl5WNw2erOCFOzb/exec";
 
 let video = document.getElementById("video");
 let stream = null;
@@ -128,16 +128,20 @@ async function ambilFoto() {
       waktu: new Date().toISOString()
     };
 
-   if (navigator.onLine) {
+    if (navigator.onLine) {
       const response = await fetch(API_URL, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(data)
       });
-      
-      if (response.ok) {
-        document.getElementById("status").innerText = "✓ Berhasil absen";
+
+      const result = await response.json();
+      if (result.success) {
+        document.getElementById("status").innerText = "✓ " + result.message;
       } else {
-        throw new Error("Server error: " + response.status);
+        document.getElementById("status").innerText = "✗ " + result.message;
       }
     } else {
       saveOffline(data);
