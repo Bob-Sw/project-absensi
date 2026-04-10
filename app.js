@@ -77,25 +77,38 @@ function saveOffline(data) {
 }
 
 // SYNC
-function syncData() {
+async function syncData() {
   let req = indexedDB.open("absensiDB", 1);
 
-  req.onsuccess = e => {
+  req.onsuccess = async (e) => {
     let db = e.target.result;
     let tx = db.transaction("queue", "readwrite");
     let store = tx.objectStore("queue");
-
     let getAll = store.getAll();
 
-    getAll.onsuccess = () => {
-      getAll.result.forEach(item => {
-        fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify(item)
-        });
-      });
+    getAll.onsuccess = async () => {
+      let items = getAll.result;
+      let successCount = 0;
 
-      store.clear();
+      for (let item of items) {
+        try {
+          const response = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify(item)
+          });
+          if (response.ok) {
+            successCount++;
+          }
+        } catch (err) {
+          console.error("Sync error:", err);
+        }
+      }
+
+      // Hanya clear jika semua berhasil
+      if (successCount === items.length) {
+        store.clear();
+        console.log("Sync berhasil: " + successCount + " items");
+      }
     };
   };
 }
@@ -115,19 +128,25 @@ async function ambilFoto() {
       waktu: new Date().toISOString()
     };
 
-    if (navigator.onLine) {
-      await fetch(API_URL, {
+   if (navigator.onLine) {
+      const response = await fetch(API_URL, {
         method: "POST",
         body: JSON.stringify(data)
       });
-      document.getElementById("status").innerText = "Berhasil absen";
+      
+      if (response.ok) {
+        document.getElementById("status").innerText = "✓ Berhasil absen";
+      } else {
+        throw new Error("Server error: " + response.status);
+      }
     } else {
       saveOffline(data);
-      document.getElementById("status").innerText = "Offline, disimpan";
+      document.getElementById("status").innerText = "📱 Offline, disimpan";
     }
 
   } catch (err) {
-    alert(err);
+    document.getElementById("status").innerText = "✗ Error: " + err;
+    console.error(err);
   }
 }
 
