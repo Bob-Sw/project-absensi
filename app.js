@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyNjMDjT4_OuxYMKUJl2p9cD_EGr_r8XYQwEyfS2D-vhlfXFMdK87XdXlMkfPCljfaq/exec";
+const API_URL = "https://docs.google.com/spreadsheets/d/18uhjdX7xAwHr738DlI6nn6JN96pxPdglFmpiYzpWEoM/edit?gid=2021004652#gid=2021004652";
 
 let video = document.getElementById("video");
 let stream = null;
