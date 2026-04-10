@@ -19,7 +19,7 @@ function getLocation() {
     navigator.geolocation.getCurrentPosition(
       pos => {
         // Ubah threshold akurasi menjadi lebih fleksibel (100 meter)
-        if (pos.coords.accuracy > 100) {
+        if (pos.coords.accuracy > 150) {
           reject("GPS tidak akurat (akurasi: " + Math.round(pos.coords.accuracy) + "m)");
         } else {
           resolve(pos.coords);
